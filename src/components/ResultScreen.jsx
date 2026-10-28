@@ -34,13 +34,20 @@ export default function ResultScreen({ answers, onRestart, onOpenGuide, onShare 
         aria-label={results.map((r) => `${r.short} ${r.percent}%`).join(', ')}
       >
         {results.map((r) => (
-          <div
+          <button
             key={r.key}
-            className="flex min-w-0 items-center justify-center text-xs font-bold text-white"
+            type="button"
+            onClick={() =>
+              document
+                .getElementById(`theory-${r.key}`)
+                ?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+            }
+            aria-label={`Ir para ${r.name}`}
+            className="flex min-w-0 cursor-pointer items-center justify-center text-xs font-bold text-white transition hover:brightness-110 focus:outline-none focus-visible:ring-4 focus-visible:ring-inset focus-visible:ring-white"
             style={{ flexGrow: r.percent, flexBasis: 0, backgroundColor: r.hex }}
           >
             {r.percent >= 8 ? `${r.percent}%` : ''}
-          </div>
+          </button>
         ))}
       </div>
 
@@ -93,16 +100,17 @@ export default function ResultScreen({ answers, onRestart, onOpenGuide, onShare 
 
 function TheoryBox({ theory: t, isTop }) {
   const minHeight = 90 + t.percent * 4
-  const numberSize = 2 + Math.min(t.percent, 60) / 30
+  const numberSize = 2 + Math.min(t.percent, 60) / 40
 
   return (
     <article
-      className={`rounded-3xl border-2 p-5 ${t.bg} ${t.border} ${isTop ? 'shadow-lg ring-4 ring-offset-2' : 'shadow-sm'}`}
+      id={`theory-${t.key}`}
+      className={`scroll-mt-4 rounded-3xl border-2 p-5 ${t.bg} ${t.border} ${isTop ? 'shadow-lg ring-4 ring-offset-2' : 'shadow-sm'}`}
       style={{ minHeight, ...(isTop ? { '--tw-ring-color': t.hex } : {}) }}
     >
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <h3 className={`font-extrabold leading-tight ${t.text}`} style={{ fontSize: `${1 + t.percent / 100}rem` }}>
+          <h3 className={`break-words hyphens-auto font-extrabold leading-tight ${t.text}`} style={{ fontSize: `${1 + t.percent / 100}rem` }}>
             {t.name}
           </h3>
           <div className="mt-2 flex flex-wrap gap-2">
@@ -118,7 +126,7 @@ function TheoryBox({ theory: t, isTop }) {
             )}
           </div>
         </div>
-        <span className="font-black leading-none" style={{ color: t.hex, fontSize: `${numberSize}rem` }}>
+        <span className="shrink-0 font-black leading-none" style={{ color: t.hex, fontSize: `${numberSize}rem` }}>
           {t.percent}%
         </span>
       </div>

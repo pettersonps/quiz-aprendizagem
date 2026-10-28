@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import ScrollTopButton from './components/ScrollTopButton'
 import HomeScreen from './components/HomeScreen'
 import QuizScreen from './components/QuizScreen'
 import ResultScreen from './components/ResultScreen'
@@ -19,6 +20,11 @@ export default function App() {
   const [answers, setAnswers] = useState(() => Array(QUESTIONS.length).fill(null))
   const [story, setStory] = useState(null) // dados do cartão de Stories (ou null)
   const [confirmDiscard, setConfirmDiscard] = useState(false) // modal de descarte
+
+  // Ao trocar de tela, volta ao topo da página
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }, [screen])
 
   const select = (key) =>
     setAnswers((prev) => prev.map((v, i) => (i === index ? key : v)))
@@ -85,6 +91,8 @@ export default function App() {
       <footer className="mt-auto pt-8 text-center text-xs leading-relaxed text-slate-500">
         © {new Date().getFullYear()} · Feito por Gustavo Assini, Luiz Pegoraro, <br />Petterson Santos e Sofia Knoll
       </footer>
+
+      <ScrollTopButton />
 
       {confirmDiscard && (
         <ConfirmModal onConfirm={restart} onCancel={() => setConfirmDiscard(false)} />
